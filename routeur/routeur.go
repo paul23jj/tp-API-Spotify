@@ -1,7 +1,8 @@
-package main
+package routeur
 
 import (
 	"net/http"
+    "tp-API-Spotify/controller"
 )
 
 func SetupRouter() *http.ServeMux {
