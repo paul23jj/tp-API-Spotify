@@ -2,18 +2,16 @@ package main
 
 import (
 	"net/http"
-    
-	"tp-API-Spotify/controller"
 )
 
 func SetupRouter() *http.ServeMux {
-    mux := http.NewServeMux()
+	mux := http.NewServeMux()
 
-    mux.HandleFunc("/", HomeHandler)
-    mux.HandleFunc("/damso", DamsoHandler)
-    mux.HandleFunc("/laylow", LaylowHandler)
+	mux.HandleFunc("/", HomeHandler)
+	mux.HandleFunc("/damso", DamsoHandler)
+	mux.HandleFunc("/laylow", LaylowHandler)
 
-    mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-    return mux
+	return mux
 }
