@@ -1,3 +1,3 @@
-module API-spotify-request
+module tp-API-Spotify
 
-go 1.21
+go 1.25.1
