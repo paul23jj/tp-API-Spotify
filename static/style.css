@@ -1,0 +1,27 @@
+body {
+    background-image: url("../img/spotify.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    margin: 0;
+    padding: 0;
+}
+.titre {
+    color: black;
+    text-align: center;
+    font-size: 5rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+.Damso {
+    color: black;
+    text-align: center;
+    font-size: 5rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+.Laylow {
+    color: black;
+    text-align: center;
+    font-size: 5rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}

@@ -21,24 +21,14 @@ type TokenResponse struct {
 var (
 	currentToken string
 	tokenMutex   sync.RWMutex
-	tokenExpiry  time.Time
 )
 
-// InitTokenRefresh obtient un token et lance une goroutine pour le renouveler toutes les heures
+// InitTokenRefresh obtient un token Spotify via Client Credentials
 func InitTokenRefresh() {
-	// Obtenir le premier token de manière SYNCHRONE (bloquant)
-	fmt.Println("[Init] Obtention du token Spotify...")
 	RefreshSpotifyToken()
 
-	// Vérifier que le token a bien été obtenu
-	if GetToken() == "" {
-		fmt.Println("[Erreur] Impossible d'obtenir le token Spotify au démarrage")
-		return
-	}
-
-	// Lancer la goroutine de renouvellement
+	// Renouveler automatiquement toutes les heures
 	go func() {
-		// Renouveler toutes les heures après le démarrage
 		ticker := time.NewTicker(1 * time.Hour)
 		defer ticker.Stop()
 
@@ -50,22 +40,22 @@ func InitTokenRefresh() {
 
 // RefreshSpotifyToken obtient un nouveau token via Client Credentials
 func RefreshSpotifyToken() {
-	clientID := os.Getenv("SPOTIFY_CLIENT_ID")
-	clientSecret := os.Getenv("SPOTIFY_CLIENT_SECRET")
+	clientID := os.Getenv("clientID")
+	clientSecret := os.Getenv("clientSecret")
 
 	if clientID == "" || clientSecret == "" {
-		fmt.Println("Erreur : SPOTIFY_CLIENT_ID ou SPOTIFY_CLIENT_SECRET manquants")
+		fmt.Println("[Erreur] clientID ou clientSecret manquants")
 		return
 	}
 
 	// Encodage Base64 : clientID:clientSecret
 	auth := base64.StdEncoding.EncodeToString([]byte(clientID + ":" + clientSecret))
 
-	// Préparer la requête POST
+	// Requête POST pour obtenir le token
 	reqBody := "grant_type=client_credentials"
 	req, err := http.NewRequest(http.MethodPost, "https://accounts.spotify.com/api/token", bytes.NewBufferString(reqBody))
 	if err != nil {
-		fmt.Println("Erreur création requête token :", err.Error())
+		fmt.Println("[Erreur] Création requête token :", err.Error())
 		return
 	}
 
@@ -75,33 +65,35 @@ func RefreshSpotifyToken() {
 	httpClient := http.Client{Timeout: time.Second * 5}
 	res, err := httpClient.Do(req)
 	if err != nil {
-		fmt.Println("Erreur appel endpoint token :", err.Error())
+		fmt.Println("[Erreur] Appel endpoint token :", err.Error())
 		return
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(res.Body)
-		fmt.Printf("Erreur token (status %d): %s\n", res.StatusCode, string(body))
+		fmt.Printf("[Erreur] Status %d: %s\n", res.StatusCode, string(body))
 		return
 	}
 
 	var tokenResp TokenResponse
 	if err := json.NewDecoder(res.Body).Decode(&tokenResp); err != nil {
-		fmt.Println("Erreur décodage réponse token :", err.Error())
+		fmt.Println("[Erreur] Décodage réponse token :", err.Error())
 		return
 	}
 
-	// Sauvegarder le token avec expiration
+	// Sauvegarder le token
 	tokenMutex.Lock()
 	currentToken = tokenResp.AccessToken
-	tokenExpiry = time.Now().Add(time.Duration(tokenResp.ExpiresIn) * time.Second)
 	tokenMutex.Unlock()
 
-	fmt.Printf("[Token Spotify] Renouvelé à %s (expire à %s)\n", time.Now().Format("15h04"), tokenExpiry.Format("15h04"))
+	// Définir comme variable d'environnement pour les autres contrôleurs
+	os.Setenv("SPOTIFY_TOKEN", tokenResp.AccessToken)
+
+	fmt.Printf("[✓] Token Spotify obtenu (expire dans %d secondes)\n", tokenResp.ExpiresIn)
 }
 
-// GetToken retourne le token actuel de manière thread-safe
+// GetToken retourne le token actuel
 func GetToken() string {
 	tokenMutex.RLock()
 	defer tokenMutex.RUnlock()

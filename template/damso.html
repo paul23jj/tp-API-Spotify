@@ -5,11 +5,21 @@
 </head>
 <body>
 
-<h1>Damso</h1>
-
+<h1>Damso - Albums</h1>
 <p>Données Spotify récupérées :</p>
 
-<pre>{{ . }}</pre>
+<pre>
+Results count: {{len .Results}}
+Data: {{.}}
+</pre>
+
+{{range .Results}}
+<div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
+    <h3>{{.Name}}</h3>
+    <p>Date: {{.ReleaseDate}}</p>
+    <p>Titres: {{.TotalTracks}}</p>
+</div>
+{{end}}
 
 </body>
 </html>

@@ -3,11 +3,12 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 )
 
 func Spotify() {
-	token := GetToken()
+	token := os.Getenv("SPOTIFY_TOKEN")
 	if token == "" {
 		fmt.Println("Token Spotify indisponible")
 		return

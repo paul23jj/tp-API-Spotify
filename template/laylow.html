@@ -2,14 +2,40 @@
 <html>
 <head>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .track {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.9);
+        }
+        .track h3 {
+            margin-top: 0;
+            color: #1DB954;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Laylow</h1>
-
+<h1>Laylow - Track</h1>
 <p>Données Spotify récupérées :</p>
 
-<pre>{{ . }}</pre>
+{{if .Name}}
+    <div class="track">
+        <h3>{{.Name}}</h3>
+        <p><strong>Album :</strong> {{.Album.Name}}</p>
+        <p><strong>Durée :</strong> {{.Duration}}ms</p>
+        {{range .Artists}}
+            <p><strong>Artiste :</strong> {{.Name}}</p>
+        {{end}}
+        {{if .Album.Images}}
+            <img src="{{index .Album.Images 0}.URL}}" alt="Album" style="max-width: 150px; margin-top: 10px;">
+        {{end}}
+    </div>
+{{else}}
+    <p>Aucune donnée trouvée</p>
+{{end}}
 
 </body>
 </html>

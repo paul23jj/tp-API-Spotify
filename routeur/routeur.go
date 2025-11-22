@@ -3,6 +3,7 @@ package routeur
 import (
 	"fmt"
 	"net/http"
+	"text/template"
 	"tp-API-Spotify/controller"
 )
 
@@ -27,15 +28,44 @@ func spotifyHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func damsoHandler(w http.ResponseWriter, r *http.Request) {
-	controller.Damso()
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintln(w, "Damso executed")
+	data, err := controller.Damso()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Erreur: %v\n", err)
+		return
+	}
+
+	// Debug: afficher les données reçues
+	fmt.Printf("[DEBUG] Damso data: %+v\n", data)
+
+	tmpl, err := template.ParseFiles("template/damso.html")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Erreur template: %v\n", err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	tmpl.Execute(w, data)
 }
 
 func laylowHandler(w http.ResponseWriter, r *http.Request) {
-	controller.Laylow()
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintln(w, "Laylow executed")
+	data, err := controller.Laylow()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Erreur: %v\n", err)
+		return
+	}
+
+	tmpl, err := template.ParseFiles("template/laylow.html")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Erreur template: %v\n", err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	tmpl.Execute(w, data)
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
