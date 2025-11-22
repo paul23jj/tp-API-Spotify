@@ -1,25 +1,141 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <title>Damso - Albums</title>
+     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            background: linear-gradient(135deg, #00ff59 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        
+        .info {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .albums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .album-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: transform 0.7s ease;
+            cursor: pointer;
+        }
+        
+        .album-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+        }
+        
+        .album-cover {
+            width: 100%;
+            height: 250px;
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+        
+        .album-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .album-info {
+            padding: 15px;
+        }
+        
+        .album-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .album-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .album-details p {
+            margin: 5px 0;
+        }
+        
+        .no-data {
+            color: white;
+            text-align: center;
+            font-size: 1.2em;
+            padding: 40px;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Damso - Albums</h1>
-<p>Données Spotify récupérées :</p>
-
-<pre>
-Results count: {{len .Results}}
-Data: {{.}}
-</pre>
-
-{{range .Results}}
-<div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
-    <h3>{{.Name}}</h3>
-    <p>Date: {{.ReleaseDate}}</p>
-    <p>Titres: {{.TotalTracks}}</p>
+<div class="container">
+    <h1>Damso - Albums</h1>
+    <div class="info">Récupération depuis Spotify API</div>
+    
+    {{if .Results}}
+        <div class="albums-grid">
+            {{range .Results}}
+            <div class="album-card">
+                <div class="album-cover">
+                    {{if .Images}}
+                        <img src="{{(index .Images 0).URL}}" alt="{{.Name}}" loading="lazy">
+                    {{else}}
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #e0e0e0; color: #999;">
+                            Pas d'image
+                        </div>
+                    {{end}}
+                </div>
+                <div class="album-info">
+                    <div class="album-title" title="{{.Name}}">{{.Name}}</div>
+                    <div class="album-details">
+                        <p><strong>Date:</strong> {{.ReleaseDate}}</p>
+                        <p><strong>Titres:</strong> {{.TotalTracks}}</p>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+    {{else}}
+        <div class="no-data">
+            Aucun album trouvé
+        </div>
+    {{end}}
 </div>
-{{end}}
 
 </body>
 </html>

@@ -13,15 +13,18 @@ body {
     font-size: 5rem;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 }
+.box {
+    align-items: center;
+}
 .Damso {
-    color: black;
+    background-image: url("../img/damso.jpg");
     text-align: center;
-    font-size: 5rem;
+    font-size: 3rem;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 }
 .Laylow {
-    color: black;
+    background-image: url("../img/laylow.jpg");
     text-align: center;
-    font-size: 5rem;
+    font-size: 3rem;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 }
