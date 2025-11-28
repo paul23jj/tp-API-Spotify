@@ -8,5 +8,6 @@ var InitSpotify = func() {
 }
 
 func Spotify() {
-	
-}	
+	Damso()
+	Laylow()
+}

@@ -11,7 +11,8 @@ import (
 type Laylow struct {
 	Results []struct {
 		Name string `json:"album_type"`
-		ListeningTime string `json:"release_date"`
+		Time string `json:"release_date"`
+		Date string `json:"total_tracks"`
 		
 	} `json:"items"`
 }
